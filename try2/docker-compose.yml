@@ -1,0 +1,27 @@
+version: '3'
+services:
+  acortador:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+    networks:
+      - acortador_network
+  db:
+    image: postgres
+    restart: always
+    environment:
+        - POSTGRES_HOST=db
+        - POSTGRES_PORT=5432
+        - POSTGRES_DB=urlshortener
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=grettel33
+    networks:
+      - acortador_network
+networks:
+  acortador_network:

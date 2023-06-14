@@ -5,18 +5,16 @@ import psycopg2
 
 app = Flask(__name__)
 
-# Establecer la conexión a la base de datos
-conn = psycopg2.connect(
-    host="localhost",
-    user="postgres",
-    password="grettel33",
-    dbname="urlshortener"
-)
-
 def generate_short_url():
     """Generar una cadena de URL corta aleatoria."""
     chars = string.ascii_letters + string.digits
-    return ''.join(random.choice(chars) for _ in range(6))
+    while True:
+        short_url = ''.join(random.choice(chars) for _ in range(6))
+        cursor = conn.cursor()
+        cursor.execute("SELECT short_url FROM urls WHERE short_url = %s", (short_url,))
+        if not cursor.fetchone():
+            cursor.close()
+            return short_url
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -63,4 +61,11 @@ def redirect_to_url(short_url):
         return "Lo siento, no se pudo encontrar esa URL."
 
 if __name__ == '__main__':
+    # Establecer la conexión a la base de datos
+    conn = psycopg2.connect(
+        host="localhost",
+        user="postgres",
+        password="grettel33",
+        dbname="urlshortener"
+    )
     app.run(debug=True)

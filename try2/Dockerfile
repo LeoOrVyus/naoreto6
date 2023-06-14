@@ -17,6 +17,13 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install psycopg2
 
 # Copy project
 COPY . /usr/src/app/
+
+# Expose port 5000
+EXPOSE 5000
+
+# Set the command to run the application
+CMD ["python", "app.py"]
